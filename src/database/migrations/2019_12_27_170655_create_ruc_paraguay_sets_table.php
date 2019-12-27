@@ -13,15 +13,19 @@ class CreateRucParaguaySetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('ruc_paraguay_set', function (Blueprint $table) {
-            // 1000311|DELGADILLO DE VEGA, GUILLERMINA|8|GAGA820361S|
-            $table->bigIncrements('id');
-            $table->integer('nro_ruc');
-            $table->string('denominacion',512);
-            $table->integer('digito_verificador');
-            $table->string('ruc_anterior',32);
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('ruc_paraguay_set')) {
+
+            Schema::create('ruc_paraguay_set', function (Blueprint $table) {
+                // 1000311|DELGADILLO DE VEGA, GUILLERMINA|8|GAGA820361S|
+                $table->bigIncrements('id');
+                $table->integer('nro_ruc');
+                $table->string('denominacion',512);
+                $table->integer('digito_verificador');
+                $table->string('ruc_anterior',32);
+                $table->timestamps();
+            });
+            
+        }
     }
 
     /**

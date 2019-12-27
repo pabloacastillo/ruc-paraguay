@@ -1,24 +1,24 @@
 <?php
 
-namespace App\Console\Commands;
+namespace pabloacastillo\RUCParaguay\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class RUCParaguayCmd extends Command
+class RucParaguayCmdSearch extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'ruc:search {busqueda}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Buscar RUC ruc:search 123456';
 
     /**
      * Create a new command instance.
@@ -38,5 +38,7 @@ class RUCParaguayCmd extends Command
     public function handle()
     {
         //
+        $busqueda = $this->argument('busqueda');
+        echo "\n \t BUSCAR $busqueda \n\n";
     }
 }
