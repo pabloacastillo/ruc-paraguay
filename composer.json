@@ -1,0 +1,21 @@
+{
+    "name": "pabloacastillo/ruc-paraguay",
+    "description": "Fetch, search and retrieve RUC codes from the official taxes database from SET. Descargar, buscar y brindar información sobre los numeros de RUC desde la fuente oficial del SET en Paraguay.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Pablo A. Castillo",
+            "email": "pabloacastillo@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "guzzlehttp/guzzle": "^6.5@dev"
+    },
+    "autoload":{
+        "psr-4":{
+            "pabloacastillo\\RUCParaguay\\":"src/"
+        }
+    }
+}
