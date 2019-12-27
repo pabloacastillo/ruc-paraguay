@@ -38,6 +38,9 @@ class RucParaguayCmdUpdate extends Command
     public function handle()
     {
         //
-        echo "\n \t RUC \n\n";
+        echo "\n========== STARTING ========== \n";
+        echo "========== DOWNLOADING ========== \n";
+        app('pabloacastillo\RUCParaguay\Http\Controllers\RucpyController')->Download();
+        echo "\n========== FINISHED ========== \n\n";
     }
 }

@@ -11,7 +11,7 @@ class RucParaguayCmdSearch extends Command
      *
      * @var string
      */
-    protected $signature = 'ruc:search {busqueda}';
+    protected $signature = 'ruc:search {busqueda*}';
 
     /**
      * The console command description.
@@ -39,6 +39,9 @@ class RucParaguayCmdSearch extends Command
     {
         //
         $busqueda = $this->argument('busqueda');
+        if(is_array($busqueda)){
+            $busqueda = implode(", ",$busqueda);
+        }
         echo "\n \t BUSCAR $busqueda \n\n";
     }
 }
