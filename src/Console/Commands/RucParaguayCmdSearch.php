@@ -3,6 +3,8 @@
 namespace pabloacastillo\RUCParaguay\Console\Commands;
 
 use Illuminate\Console\Command;
+use pabloacastillo\RUCParaguay\Models\RucParaguaySet;
+
 
 class RucParaguayCmdSearch extends Command
 {
@@ -40,8 +42,16 @@ class RucParaguayCmdSearch extends Command
         //
         $busqueda = $this->argument('busqueda');
         if(is_array($busqueda)){
-            $busqueda = implode(", ",$busqueda);
+            $_busqueda = implode(" ",$busqueda);
+            $busqueda = implode("%",$busqueda);
         }
-        echo "\n \t BUSCAR $busqueda \n\n";
+
+        $records=RucParaguaySet::where('nro_ruc','LIKE',"%{$busqueda}%")->orWhere('denominacion','LIKE',"%{$busqueda}%")->orWhere('ruc_anterior','LIKE',"%{$busqueda}%")->get();
+        echo "\n \t BUSCAR $_busqueda \n\n";
+        foreach ($records as $record) {
+            $str='RUC: '.$record['nro_ruc'].'-'.$record['digito_verificador'].' ('.$record['denominacion'].') '.$record['ruc_anterior'];
+            $str=utf8_decode($str);
+            echo "$str \n";
+        }
     }
 }
