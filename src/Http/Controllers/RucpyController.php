@@ -66,7 +66,7 @@ class RucpyController extends Controller
 
 	 	if($NEW_DATA==false) { 
 	 		echo 'NO NEW DATA TO IMPORT';
-	 		// return ''; 
+	 		return ''; 
 	 	}
 
 	 	foreach (Storage::disk('local')->files($local_folder) as $ZIPPED_FILE) {
@@ -95,7 +95,7 @@ class RucpyController extends Controller
 	 			$file = fopen($local_txt, "r");
 				while(!feof($file)) {
 					$line = fgets($file);
-					echo($line);
+					if ( rand(0,10)<3 ){ echo($line); }
 					$data=$this->txt2ruc($line);
 					$record=$this->add_new($data);
 				}
