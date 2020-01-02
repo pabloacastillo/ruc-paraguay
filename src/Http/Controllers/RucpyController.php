@@ -11,23 +11,18 @@ use ZipArchive;
 
 use pabloacastillo\RUCParaguay\Models\RucParaguaySet;
 
-
-
 class RucpyController extends Controller
 {
     //
 	protected $url='http://www.set.gov.py/rest/contents/download/collaboration/sites/PARAGUAY-SET/documents/informes-periodicos/ruc/';
 
-
 	public function search($busqueda){
 		$records=RucParaguaySet::where('nro_ruc','LIKE',"%{$busqueda}%")->orWhere('denominacion','LIKE',"%{$busqueda}%")->orWhere('ruc_anterior','LIKE',"%{$busqueda}%")->get();
-
 		return $records;
 	}
 
 	public function add_new($data){
 		if($data==false) { return false; }
-
 		return RucParaguaySet::create($data);
 	}
 
@@ -36,7 +31,7 @@ class RucpyController extends Controller
 		$local_folder='ruc-paraguay';
 		$storagePath = Storage::disk('local')->path($local_folder);
 	 	$client = new \GuzzleHttp\Client();
-	 	$now = (3600 * 24 * 15); // ACTUALIZAR CADA 15 DIAS
+	 	$now = (3600 * 24 * 2); // ACTUALIZAR CADA 2 DIAS
 	 	$delimiter = '|';
 
 	 	$NEW_DATA=false;
@@ -87,7 +82,6 @@ class RucpyController extends Controller
 
 	 	RucParaguaySet::truncate();
 
-
 	 	foreach (Storage::disk('local')->files($local_folder) as $TXT_FILE) {
 	 		if( strtolower(substr($TXT_FILE, -4)) == '.txt' ){
 	 			$local_txt = Storage::disk('local')->path($TXT_FILE);
@@ -102,18 +96,17 @@ class RucpyController extends Controller
 
 				fclose($file);
 	 			echo "\nENDED IMPORT FROM $local_txt \n";
-
 	 		}
 	 	}
+
 	 	echo "\n TERMINADO EN: ";
 	 	echo ((time()-$_START));
-
 	}
 
 	public function txt2ruc($line){
 		$line = str_replace('||', '|', $line);
 		$data=explode('|',$line);
-	 	$_DEFAULT = array('nro_ruc'=>'----','denominacion'=>'---','digito_verificador'=>'-','ruc_anterior'=>'--');
+	 	$_DEFAULT = array( 'nro_ruc'=>'----' , 'denominacion'=>'---' , 'digito_verificador'=>'-' , 'ruc_anterior'=>'--' );
 	 	$_data=array();
 
 	 	if(count($data)!=5) { return false; }
@@ -131,36 +124,4 @@ class RucpyController extends Controller
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
