@@ -17,5 +17,16 @@
         "psr-4":{
             "pabloacastillo\\RUCParaguay\\":"src/"
         }
+    },
+    "extra":{
+        "laravel": {
+            "providers": [
+                "pabloacastillo\\RUCParaguay\\RUCParaguayServiceProvider"
+            ],
+            "aliases":{
+                "RUCParaguay": "pabloacastillo\\RUCParaguay\\Facades\\RUCParaguayFacade"
+            }
+            
+        }
     }
 }

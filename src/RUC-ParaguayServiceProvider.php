@@ -2,6 +2,7 @@
 
 namespace pabloacastillo\RUCParaguay;
 use Illuminate\Support\ServiceProvider;
+use pabloacastillo\RUCParaguay\Services\RUCParaguay;
 use Storage;
 use GuzzleHttp\Client;
 
@@ -20,6 +21,9 @@ class RUCParaguayServiceProvider extends ServiceProvider{
 
 	public function register(){
 
+		$this->app->bind('RUCParaguay', function () {
+            return new RUCParaguay();
+        });
 	}
 
 

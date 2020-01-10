@@ -101,6 +101,7 @@ class RucpyController extends Controller
 
 	 	echo "\n TERMINADO EN: ";
 	 	echo ((time()-$_START));
+	 	echo " segundos \n";
 	}
 
 	public function txt2ruc($line){
