@@ -1,6 +1,6 @@
 {
     "name": "pabloacastillo/ruc-paraguay",
-    "description": "Fetch, search and retrieve RUC codes from the official taxes database from SET. Descargar, buscar y brindar información sobre los numeros de RUC desde la fuente oficial del SET en Paraguay. ",
+    "description": "This laravel package fetch, search and retrieve RUC codes from the official taxes database from SET. Este es un paquete de laravel para descargar, buscar y brindar información sobre los numeros de RUC desde la fuente oficial del SET en Paraguay. ",
     "keywords": ["laravel", "ruc", "paraguay", "taxes"],
     "license": "MIT",
     "authors": [
