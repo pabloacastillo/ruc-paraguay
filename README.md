@@ -41,7 +41,7 @@ Performs a searchs inside the database with the provided information. Will retur
 To search for information inside the database you can especify the fields you are looking for like this:
 ```
 $toSearch=array(
-	'nro_ruc' 		=>'4600',
+	'nro_ruc' 	=>'4600',
 	'denominacion' 	=>'alejandro',
 	'ruc_anterior' 	=>'ca',
 );
@@ -52,7 +52,7 @@ You can also search with only one field:
 
 ```
 $toSearch=array(
-	'nro_ruc' 		=>'460018',
+	'nro_ruc' =>'460018',
 );
 RUCParaguay::search($toSearch);
 ```
@@ -63,7 +63,8 @@ Or you can search the whole thing like this:
 RUCParaguay::search('46001');
 ```
 
-To update the database periodically the update command should be hooked to a cron command to run every couple of days. The update is hardset inside the code to be able to be executed a maximun of once every 48 hours.
+To update the database periodically run the artisan command, it should be hooked to a cron command to run every couple of days. The update is hardset inside the code to be able to be executed a maximun of once every 48 hours.
+
 
 `php artisan ruc:update`
 
