@@ -18,12 +18,18 @@ class RUCParaguayServiceProvider extends ServiceProvider
         ]);
 
         $this->loadMigrationsFrom(__DIR__ . '/database/migrations/');
+
+        $this->publishes([
+            __DIR__ . '/../config/ruc-paraguay.php' => config_path('ruc-paraguay.php'),
+        ], 'ruc-paraguay-config');
     }
 
     public function register(): void
     {
+        $this->mergeConfigFrom(__DIR__ . '/../config/ruc-paraguay.php', 'ruc-paraguay');
+
         $this->app->bind('RUCParaguay', function () {
-            return new RUCParaguay();
+            return $this->app->make(RUCParaguay::class);
         });
 
         $this->app->singleton(RUCParaguayUpdater::class, function () {
