@@ -1,101 +1,74 @@
 # ruc-paraguay
-Fetch, search and retrieve RUC codes from the official taxes database from SET. 
 
-Descargar, buscar y brindar información sobre los numeros de RUC desde la fuente oficial del SET en Paraguay.
-
+Descargar, buscar y brindar información sobre los números de RUC desde la fuente oficial de DNIT (ex SET) en Paraguay.
 
 ## Install
 
-Use composer to install the package, just run this comamnd to add it to the composer.json
+```bash
+composer require martinpa13py/ruc-paraguay
+php artisan migrate
+```
 
-`composer require martinpa13py/ruc-paraguay`
+Autodiscovery registra el service provider. Si hace falta, en `config/app.php`:
 
+```php
+martinpa13py\RUCParaguay\RUCParaguayServiceProvider::class
+'RUCParaguay' => martinpa13py\RUCParaguay\Facades\RUCParaguayFacade::class
+```
 
-The autodiscovery option should take care of things, but if that doesnt work follow the next steps.
-
-Add the package to config/app.php to the providers list:
-
-`martinpa13py\RUCParaguay\RUCParaguayServiceProvider::class`
-
-Add the package to config/app.php to the aliases list:
-
-`'RUCParaguay' => martinpa13py\RUCParaguay\Facades\RUCParaguayFacade::class`
-
-
-
-
-## Artisan Commands 
-
-This are the artisan commands avaible, you should hook update the data at least once a month.
-
-`php artisan ruc:update`
-
-Fetchs and updates all the local data from the source. Will download several zip files, decompress to text files and load them into the database.
-
-**Opciones disponibles:**
-
-- `--force` : Fuerza la descarga borrando los archivos en caché antes de descargar (ignora la validación de 48 horas)
-- `--batch-size=1000` : Cantidad de registros a insertar por lote (mínimo 100). Útil para optimizar memoria/rendimiento.
-- `--limit=N` : Límite máximo de registros a importar. Útil para pruebas rápidas.
-
-**Ejemplos:**
+Publicar configuración (URL de DNIT, caché, tamaño de lote):
 
 ```bash
-# Descarga normal (respeta caché de 48h)
+php artisan vendor:publish --tag=ruc-paraguay-config
+```
+
+Tras actualizar el paquete, correr migraciones: se achican tipos de columna, se quitan timestamps sin uso y se agregan índices `(nro_ruc, digito_verificador)` y `estado`.
+
+## Artisan
+
+```bash
+# Descarga completa (respeta caché de 48h)
 php artisan ruc:update
 
-# Forzar descarga completa ignorando caché
+# Forzar descarga e importación completa
 php artisan ruc:update --force
 
-# Importar solo 5000 registros (pruebas)
-php artisan ruc:update --limit=5000
+# Prueba rápida: solo ruc0.zip y 1000 registros
+php artisan ruc:update --test
 
-# Usar lotes de 2000 para mejor rendimiento
-php artisan ruc:update --batch-size=2000
+# Un archivo y un tope de filas
+php artisan ruc:update --files=0 --limit=500
 
-# Combinar opciones
-php artisan ruc:update --force --batch-size=500 --limit=10000
+# Lotes más grandes
+php artisan ruc:update --batch-size=5000
 ```
 
-`php artisan ruc:search Castillo Pablo`
+`--limit` y `--test` solo descargan/extraen los ZIP indicados (por defecto `ruc0`). Si la tabla ya tiene datos, hay que pasar `--force` para no vaciar producción por accidente.
 
-Performs a searchs inside the database with the provided information. Will return  results and some debug info.
-
-## HOW TO USE
-
-To search for information inside the database you can especify the fields you are looking for like this:
-```
-$toSearch=array(
-	'nro_ruc' 	=>'4600',
-	'denominacion' 	=>'alejandro',
-	'ruc_anterior' 	=>'ca',
-);
-RUCParaguay::search($toSearch);
+```bash
+php artisan ruc:search Castillo Pablo
+php artisan ruc:search 460018
 ```
 
-You can also search with only one field:
+La búsqueda por RUC numérico usa igualdad o prefijo (aprovecha el índice). Por nombre, `LIKE`. Máximo 50 filas salvo que se pase otro límite en código.
 
+## Uso
+
+```php
+RUCParaguay::search([
+    'nro_ruc' => '4600',
+    'denominacion' => 'alejandro',
+]);
+
+RUCParaguay::search('460018');
+RUCParaguay::search('460018-3');
+RUCParaguay::search('CASTILLO', 20);
 ```
-$toSearch=array(
-	'nro_ruc' =>'460018',
-);
-RUCParaguay::search($toSearch);
+
+Programar `php artisan ruc:update` cada dos días (el caché local evita redescargar ZIP con menos de 48 h).
+
+## Tests
+
+```bash
+composer test
 ```
-
-Or you can search the whole thing like this:
-
-```
-RUCParaguay::search('46001');
-```
-
-To update the database periodically run the artisan command, it should be hooked to a cron command to run every couple of days. The update is hardset inside the code to be able to be executed a maximun of once every 48 hours.
-
-
-`php artisan ruc:update`
-
-
-### TODO
-
-- [X] Add code examples.
-
-- [ ] Find a way to make it faster without dumping direct-to-database.
