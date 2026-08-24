@@ -2,19 +2,15 @@
 
 namespace martinpa13py\RUCParaguay\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use martinpa13py\RUCParaguay\Models\RucParaguaySet;
+use martinpa13py\RUCParaguay\Services\RUCParaguay;
 use martinpa13py\RUCParaguay\Services\RUCParaguayUpdater;
 
-class RucpyController extends Controller
+class RucpyController
 {
     public function search(string $busqueda)
     {
-        return RucParaguaySet::query()
-            ->where('nro_ruc', 'LIKE', "%{$busqueda}%")
-            ->orWhere('denominacion', 'LIKE', "%{$busqueda}%")
-            ->orWhere('ruc_anterior', 'LIKE', "%{$busqueda}%")
-        ->get();
+        return RUCParaguay::search($busqueda);
     }
 
     public function add(array $data): bool
@@ -43,4 +39,3 @@ class RucpyController extends Controller
         $updater->run();
     }
 }
-
