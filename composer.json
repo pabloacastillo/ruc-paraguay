@@ -1,32 +1,52 @@
 {
-    "name": "pabloacastillo/ruc-paraguay",
-    "description": "This laravel package fetch, search and retrieve RUC codes from the official taxes database from SET. Este es un paquete de laravel para descargar, buscar y brindar información sobre los numeros de RUC desde la fuente oficial del SET en Paraguay. ",
+    "name": "martinpa13py/ruc-paraguay",
+    "description": "This a fork from pabloacastillo/ruc-paraguay that works with Laravel 11+",
     "keywords": ["laravel", "ruc", "paraguay", "taxes"],
     "license": "MIT",
     "authors": [
         {
             "name": "Pablo A. Castillo",
             "email": "pabloacastillo@gmail.com"
+        },
+        {
+            "name": "Martin Victor Antonio Martinez Paredes",
+            "email": "martinpa13_py@hotmail.com"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
-        "guzzlehttp/guzzle": "^6.3"
+        "php": "^8.2",
+        "ext-zip": "*",
+        "guzzlehttp/guzzle": "^7.8",
+        "illuminate/console": "^11.0|^12.0|^13.0",
+        "illuminate/database": "^11.0|^12.0|^13.0",
+        "illuminate/filesystem": "^11.0|^12.0|^13.0",
+        "illuminate/support": "^11.0|^12.0|^13.0"
     },
-    "autoload":{
-        "psr-4":{
-            "pabloacastillo\\RUCParaguay\\":"src/"
+    "require-dev": {
+        "orchestra/testbench": "^9.0|^10.0|^11.0",
+        "phpunit/phpunit": "^11.0|^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "martinpa13py\\RUCParaguay\\": "src/"
         }
     },
-    "extra":{
+    "autoload-dev": {
+        "psr-4": {
+            "martinpa13py\\RUCParaguay\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
         "laravel": {
             "providers": [
-                "pabloacastillo\\RUCParaguay\\RUCParaguayServiceProvider"
+                "martinpa13py\\RUCParaguay\\RUCParaguayServiceProvider"
             ],
-            "aliases":{
-                "RUCParaguay": "pabloacastillo\\RUCParaguay\\Facades\\RUCParaguayFacade"
+            "aliases": {
+                "RUCParaguay": "martinpa13py\\RUCParaguay\\Facades\\RUCParaguayFacade"
             }
-            
         }
+    },
+    "scripts": {
+        "test": "phpunit"
     }
 }

@@ -16,12 +16,12 @@ class CreateRucParaguaySetsTable extends Migration
         if (!Schema::hasTable('ruc_paraguay_set')) {
 
             Schema::create('ruc_paraguay_set', function (Blueprint $table) {
-                // 1000311|DELGADILLO DE VEGA, GUILLERMINA|8|GAGA820361S|
                 $table->bigIncrements('id');
-                $table->string('nro_ruc',32);
-                $table->string('denominacion',512);
-                $table->string('digito_verificador',8);
-                $table->string('ruc_anterior',32);
+                $table->string('nro_ruc',32)->nullable();
+                $table->string('denominacion',512)->nullable();
+                $table->string('digito_verificador',8)->nullable();
+                $table->string('ruc_anterior',32)->nullable();
+                $table->string('estado',40)->nullable();
                 $table->timestamps();
             });
             
@@ -35,6 +35,6 @@ class CreateRucParaguaySetsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ruc_paraguay_sets');
+        
     }
 }

@@ -1,57 +1,32 @@
 <?php
 
-namespace pabloacastillo\RUCParaguay\Console\Commands;
+namespace martinpa13py\RUCParaguay\Console\Commands;
 
 use Illuminate\Console\Command;
-use pabloacastillo\RUCParaguay\Models\RucParaguaySet;
-use pabloacastillo\RUCParaguay\Services\RUCParaguay;
-
+use martinpa13py\RUCParaguay\Services\RUCParaguay;
 
 class RucParaguayCmdSearch extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'ruc:search {busqueda*}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Buscar RUC ruc:search 123456';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function handle(): int
     {
-        parent::__construct();
-    }
-
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
-    {
-        //
         $start = time();
-        $busqueda = $this->argument('busqueda');
-        $_busqueda = implode(" ",$busqueda);
+        $busqueda = implode(' ', $this->argument('busqueda'));
 
-        $records=RUCParaguay::search($busqueda);
+        $records = RUCParaguay::search($busqueda);
         foreach ($records as $record) {
-            $str='RUC: '.$record['nro_ruc'].'-'.$record['digito_verificador'].' ('.$record['denominacion'].') - OLD RUC: '.$record['ruc_anterior'];
-            $str=utf8_decode($str);
-            echo "$str \n";
+            $this->line(
+                'RUC: ' . $record['nro_ruc'] . '-' . $record['digito_verificador']
+                . ' (' . $record['denominacion'] . ') - OLD RUC: ' . ($record['ruc_anterior'] ?? '')
+            );
         }
 
-        echo "\n-> Finished in ".(time()-$start)." seconds.\n";
+        $this->line('');
+        $this->line('-> Finished in ' . (time() - $start) . ' seconds.');
+
+        return Command::SUCCESS;
     }
 }

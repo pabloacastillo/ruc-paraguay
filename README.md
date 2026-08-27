@@ -1,76 +1,74 @@
 # ruc-paraguay
-Fetch, search and retrieve RUC codes from the official taxes database from SET. 
 
-Descargar, buscar y brindar información sobre los numeros de RUC desde la fuente oficial del SET en Paraguay.
-
+Descargar, buscar y brindar información sobre los números de RUC desde la fuente oficial de DNIT (ex SET) en Paraguay.
 
 ## Install
 
-Use composer to install the package, just run this comamnd to add it to the composer.json
-
-`composer require pabloacastillo/ruc-paraguay`
-
-
-The autodiscovery option should take care of things, but if that doesnt work follow the next steps.
-
-Add the package to config/app.php to the providers list:
-
-`pabloacastillo\RUCParaguay\RUCParaguayServiceProvider::class`
-
-Add the package to config/app.php to the aliases list:
-
-`'RUCParaguay' => pabloacastillo\RUCParaguay\Facades\RUCParaguayFacade::class`
-
-
-
-
-## Artisan Commands 
-
-This are the artisan commands avaible, you should hook update the data at least once a month.
-
-`php artisan ruc:update`
-
-Fetchs and updates all the local data from the source. Will download several zip files, decompress to text files and load them into the database.
-
-`php artisan ruc:search Castillo Pablo`
-
-Performs a searchs inside the database with the provided information. Will return  results and some debug info.
-
-## HOW TO USE
-
-To search for information inside the database you can especify the fields you are looking for like this:
-```
-$toSearch=array(
-	'nro_ruc' 	=>'4600',
-	'denominacion' 	=>'alejandro',
-	'ruc_anterior' 	=>'ca',
-);
-RUCParaguay::search($toSearch);
+```bash
+composer require martinpa13py/ruc-paraguay
+php artisan migrate
 ```
 
-You can also search with only one field:
+Autodiscovery registra el service provider. Si hace falta, en `config/app.php`:
 
-```
-$toSearch=array(
-	'nro_ruc' =>'460018',
-);
-RUCParaguay::search($toSearch);
+```php
+martinpa13py\RUCParaguay\RUCParaguayServiceProvider::class
+'RUCParaguay' => martinpa13py\RUCParaguay\Facades\RUCParaguayFacade::class
 ```
 
-Or you can search the whole thing like this:
+Publicar configuración (URL de DNIT, caché, tamaño de lote):
 
+```bash
+php artisan vendor:publish --tag=ruc-paraguay-config
 ```
-RUCParaguay::search('46001');
+
+Tras actualizar el paquete, correr migraciones: se achican tipos de columna, se quitan timestamps sin uso y se agregan índices `(nro_ruc, digito_verificador)` y `estado`.
+
+## Artisan
+
+```bash
+# Descarga completa (respeta caché de 48h)
+php artisan ruc:update
+
+# Forzar descarga e importación completa
+php artisan ruc:update --force
+
+# Prueba rápida: solo ruc0.zip y 1000 registros
+php artisan ruc:update --test
+
+# Un archivo y un tope de filas
+php artisan ruc:update --files=0 --limit=500
+
+# Lotes más grandes
+php artisan ruc:update --batch-size=5000
 ```
 
-To update the database periodically run the artisan command, it should be hooked to a cron command to run every couple of days. The update is hardset inside the code to be able to be executed a maximun of once every 48 hours.
+`--limit` y `--test` solo descargan/extraen los ZIP indicados (por defecto `ruc0`). Si la tabla ya tiene datos, hay que pasar `--force` para no vaciar producción por accidente.
 
+```bash
+php artisan ruc:search Castillo Pablo
+php artisan ruc:search 460018
+```
 
-`php artisan ruc:update`
+La búsqueda por RUC numérico usa igualdad o prefijo (aprovecha el índice). Por nombre, `LIKE`. Máximo 50 filas salvo que se pase otro límite en código.
 
+## Uso
 
-### TODO
+```php
+RUCParaguay::search([
+    'nro_ruc' => '4600',
+    'denominacion' => 'alejandro',
+]);
 
-- [X] Add code examples.
+RUCParaguay::search('460018');
+RUCParaguay::search('460018-3');
+RUCParaguay::search('CASTILLO', 20);
+```
 
-- [ ] Find a way to make it faster without dumping direct-to-database.
+Programar `php artisan ruc:update` cada dos días (el caché local evita redescargar ZIP con menos de 48 h).
+
+## Tests
+
+```bash
+composer test
+```
